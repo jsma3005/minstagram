@@ -1,0 +1,21 @@
+.root{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    ul{
+        list-style: none;
+        padding-left: 0;
+        li{
+            font-size: 2rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            .link{
+                color: #efefef;
+            }
+            .activeLink{
+                color: rgba(0, 0, 0, 0.5);
+            }
+        }
+    }
+}

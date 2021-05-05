@@ -1,0 +1,19 @@
+.root{
+    padding: 2rem 0;
+    .card{
+        width: 50%;
+        margin: 0 auto;
+        .avatar{
+            .oldAvatar{
+                text-align: center;
+                img{
+                    width: 30%;
+                    margin-bottom: 1rem;
+                }
+            }
+            .newAvatar{
+                text-align: center;
+            }
+        }
+    }
+}

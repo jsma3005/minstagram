@@ -1,0 +1,30 @@
+.root{
+    padding: 2rem 0;
+    .card{
+        width: 40%;
+        margin: 0 auto;
+        .cardImage{
+            img{
+                width: 100%;
+            }
+        }
+        .cardBody{
+            ul {
+                list-style: none;
+                li{
+                    margin: .5rem 0;
+                    display: flex;
+                    justify-content: space-between;
+                }
+            }
+        }
+        .buttons{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            a{
+                margin: .5rem;
+            }
+        }
+    }
+}
