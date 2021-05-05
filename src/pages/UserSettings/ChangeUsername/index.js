@@ -7,6 +7,7 @@ import cls from './ChangeUsername.module.scss'
 
 const ChangeUsername = () => {
     const [newUsername, setNewUsername] = useState('');
+    const [loading, setLoading] = useState(false);
     const currentUserUid = localStorage.getItem('minstagramAuth');
     const history = useHistory();
     const dispatch = useDispatch();
@@ -48,15 +49,16 @@ const ChangeUsername = () => {
             if(usernameCheck){
                 alert('Указанный логин уже используется!')
             }else{
+                setLoading(true);
                 fire.database().ref(`users/${currentUserUid}`).update({
-                    username: newUsername
+                    username: newUsername.trim()
                 })
                 .then(() => {
                     alert('Успешно обновлено!')
                     history.goBack();
                 })
                 .catch(err => {
-                    console.log(err);
+                    setLoading(false);
                     alert(err.message);
                 })
             }
@@ -77,7 +79,7 @@ const ChangeUsername = () => {
                     </div>
                 </div>
                 <div className='card-footer text-center'>
-                    <button className='btn btn-success' onClick={handleChange}>Изменить</button>
+                    <button disabled={loading ? true : false} className='btn btn-success' onClick={handleChange}>Изменить</button>
                 </div>
             </div>
         </div>

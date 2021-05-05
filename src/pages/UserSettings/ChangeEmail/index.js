@@ -7,6 +7,7 @@ import cls from './ChangeEmail.module.scss';
 const ChangeEmail = () => {
     const [email, setEmail] = useState('');
     const { user } = useSelector(s => s.user);
+    const [loading, setLoading] = useState(false);
     const currentUser = localStorage.getItem('minstagramAuth');
     const history = useHistory();
     const oldEmail = user ? user.email : '';
@@ -16,10 +17,11 @@ const ChangeEmail = () => {
         
         if(email !== ''){
             if(email.length <= 50){
+                setLoading(true);
                 fire.auth().currentUser.updateEmail(email)
                 .then(() => {
                     fire.database().ref(`/users/${currentUser}`).update({
-                        email: email
+                        email: email.trim()
                     })
                     .then(() => {
                         alert('Обновлено успешно!')
@@ -27,6 +29,7 @@ const ChangeEmail = () => {
                         history.goBack();
                     })
                     .catch(() => {
+                        setLoading(false)
                         alert('Что-то пошло не так! Повторите позже!');
                         setEmail('');
                     })
@@ -61,7 +64,7 @@ const ChangeEmail = () => {
                     </div>
                 </div>
                 <div className='card-footer text-center'>
-                    <button className='btn btn-success' onClick={handleChangeEmail}>Поменять</button>
+                    <button disabled={loading ? true : false} className='btn btn-success' onClick={handleChangeEmail}>Поменять</button>
                 </div>
             </div>
         </div>

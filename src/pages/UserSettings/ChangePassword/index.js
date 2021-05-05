@@ -7,6 +7,7 @@ const ChangePassword = () => {
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
     const passwordType = showPassword ? 'text' : 'password';
     const history = useHistory();
 
@@ -19,6 +20,7 @@ const ChangePassword = () => {
             if(password !== passwordCheck){
                 alert('Пароли не совпадают!');
             }else{
+                setLoading(true);
                 fire.auth().currentUser.updatePassword(password)
                 .then(() => {
                     alert('Успешно обновлено!');
@@ -27,6 +29,7 @@ const ChangePassword = () => {
                     history.goBack();
                 })
                 .catch(() => {
+                    setLoading(false);
                     alert('Что-то пошло не так! Повторите позже!');
                     setPassword('');
                     setPasswordCheck('');
@@ -56,7 +59,7 @@ const ChangePassword = () => {
                     </div>
                 </div>
                 <div className='card-footer text-center'>
-                    <button onClick={changeHandle} className='btn btn-success'>Поменять</button>
+                    <button disabled={loading ? true : false} onClick={changeHandle} className='btn btn-success'>Поменять</button>
                 </div>
             </div>
         </div>

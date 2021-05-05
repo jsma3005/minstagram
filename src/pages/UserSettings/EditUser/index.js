@@ -47,7 +47,7 @@ const EditUser = () => {
                             uploadFile.snapshot.ref.getDownloadURL().then(url => {
                                 fire.database().ref(`/users/${currentUserUid}`).update({
                                     avatar: url,
-                                    fullname: newFullname
+                                    fullname: newFullname.trim()
                                 }).then(() => {
                                     fire.auth().currentUser.updateProfile({
                                         displayName: newFullname

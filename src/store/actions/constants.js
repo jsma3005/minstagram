@@ -5,3 +5,4 @@ export const GET_SINGLE_POST = 'GET_SINGLE_POST';
 export const GET_ALL_POSTS = 'GET_ALL_POSTS';
 export const GET_ALL_USERS = 'GET_ALL_USERS';
 export const GET_ALL_USERNAMES = 'GET_ALL_USERNAMES';
+export const SET_NEW_USER = 'SET_NEW_USER';

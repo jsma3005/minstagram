@@ -1,0 +1,12 @@
+.root{
+    .googleAuthBtn{
+        background: none;
+        border: none;
+        &:focus{
+            outline: none;
+        }
+        img{
+            width: 50px;
+        }
+    }
+}

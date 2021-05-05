@@ -5,6 +5,7 @@ import singlePostReducer from './singlePostReducer';
 import allPostReducer from './allPostsReducer';
 import allUsersReducer from './allUsersReducer';
 import allUsernamesReducer from './allUsernamesReducer'
+import newUserReducer from "./newUserReducer";
 
 const rootReducer = combineReducers({
     user: currentUserReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     singlePost: singlePostReducer,
     allPosts: allPostReducer,
     allUsers: allUsersReducer,
-    allUsernames: allUsernamesReducer
+    allUsernames: allUsernamesReducer,
+    newUser: newUserReducer
 });
 
 export default rootReducer;
