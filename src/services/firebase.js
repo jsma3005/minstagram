@@ -4,13 +4,13 @@ import 'firebase/database';
 import 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAobVW1uefa8xkuHrWOCVZDoLeu9ZS31TA",
-    authDomain: "disc-87cd4.firebaseapp.com",
-    databaseURL: "https://disc-87cd4.firebaseio.com",
-    projectId: "disc-87cd4",
-    storageBucket: "disc-87cd4.appspot.com",
-    messagingSenderId: "787820010297",
-    appId: "1:787820010297:web:ea1f0d81a1faac50e426e8"
+    apiKey: "AIzaSyCnuP4Yl5V7rW633Wa9_sqrsJsv45hU-YQ",
+    authDomain: "jsma-minstagram.firebaseapp.com",
+    databaseURL: "https://jsma-minstagram-default-rtdb.firebaseio.com",
+    projectId: "jsma-minstagram",
+    storageBucket: "jsma-minstagram.appspot.com",
+    messagingSenderId: "1013964593692",
+    appId: "1:1013964593692:web:f428f9ac30f63da3779dd9"
 };
 
 export const fire = firebase;
