@@ -85,23 +85,6 @@ const NewPost = () => {
         }
     }
 
-    // function addPost(){
-    //     fire.database()
-    //     .ref(`posts/`)
-    //     .push({
-    //         username: user.username,
-    //         uid: user.uid,
-    //         description: content,
-    //         images: imageURL,
-    //         comments: [],
-    //         likes: [],
-    //         date: `${moment().format('L')} - ${moment().format('LTS')}`
-    //     })
-    //     alert('Пост добавлен!');
-    //     setLoading(false)
-    //     history.push('/');
-    // }
-
     return(
         <div className={cls.root}>
             <div className={`card ${cls.card}`}>
