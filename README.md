@@ -59,7 +59,51 @@
         * вывод постов специфичного пользователя
 * Выход из аккаунта
     * закрывается доступ к приватным роутам
-    * стирается вся информация пользователя 
+    * стирается вся информация пользователя
+
+## Структура/архитектура сервера в Firebase
+* posts
+    * postId:
+        * date: str
+        * description: str
+        * images: [
+            * 0: postUrl
+            * 1: postUrl
+            ...
+        ]
+        * uid: userid
+        * username: str
+        * comments: [
+            * commentId
+                * comment: str
+                * date: str
+                * editState:
+                    * editedDate: str
+                    * state: true/false
+                * user 
+                    * avatar: url
+                    * email: str
+                    * fullname: str
+                    * uid: userid
+                    * username: str
+            * commentId
+            * commentId
+            ...
+        ]
+    * postId
+    * postId
+    * ...
+* users
+    * uid
+        * avatar: url,
+        * email: str,
+        * fullname: str,
+        * uid: userid,
+        * username: str
+    * uid
+    * uid
+    ...
+
 
 ## Лень читать всё, что сверху?🥱 Потыкай сам весь проект 🙀👇:
 ### https://jsma-minstagram.netlify.app/
