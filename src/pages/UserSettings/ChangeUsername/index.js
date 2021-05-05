@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { fire } from '../../../services/firebase';
+import { getAllUsernamesAction } from '../../../store/actions/allUsernamesAction';
 import cls from './ChangeUsername.module.scss'
 
 const ChangeUsername = () => {
-    const [newUsername, setUsername] = useState('');
+    const [newUsername, setNewUsername] = useState('');
     const currentUserUid = localStorage.getItem('minstagramAuth');
-    const [users, setUsers] = useState(null);
     const history = useHistory();
-
+    const dispatch = useDispatch();
+    const { users } = useSelector(s => s.allUsernames);
+    const { user } = useSelector(s => s.user);
 
     // получение нынешнего логина
     useEffect(() => {
-        fire.database().ref(`/users/${currentUserUid}`).on('value', res => {
-            if(res.val()){
-                setUsername(res.val().username)
-            }else{
-                setUsername('');
-            }
-        })
-    }, [setUsername, currentUserUid])
-
+        if(user){
+            setNewUsername(user.username);
+        }else{
+            setNewUsername('');
+        }
+    }, [user])
 
     // получение всех логинов
     useEffect(() => {
@@ -28,15 +28,15 @@ const ChangeUsername = () => {
             if(res.val()){
                 const response = Object.values(res.val()).map(item => item.username);
                 if(response.length !== 0){
-                    setUsers(response);
+                    dispatch(getAllUsernamesAction(response))
                 }else{
-                    setUsers(false);
+                    dispatch(getAllUsernamesAction(false))
                 }
             }else{
-                setUsers(false);
+                dispatch(dispatch(getAllUsernamesAction(false)))
             }
         })
-    }, [setUsers]);
+    }, [dispatch]);
 
     const handleChange = e => {
         e.preventDefault();
@@ -73,7 +73,7 @@ const ChangeUsername = () => {
                 </div>
                 <div className='card-body'>
                     <div className='mb-0'>
-                        <input value={newUsername} onChange={e => setUsername(e.target.value)}className='form-control' placeholder='Введите новый логин' />
+                        <input value={newUsername} onChange={e => setNewUsername(e.target.value)}className='form-control' placeholder='Введите новый логин' />
                     </div>
                 </div>
                 <div className='card-footer text-center'>

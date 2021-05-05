@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fire } from '../../services/firebase';
 import cls from './NewPost.module.scss';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,13 +15,30 @@ const NewPost = () => {
     const currentTime = moment().format();
     const { user } = useSelector(s => s.user);
 
+    const addPost = useCallback(() => {
+        fire.database()
+        .ref(`posts/`)
+        .push({
+            username: user.username,
+            uid: user.uid,
+            description: content,
+            images: imageURL,
+            comments: [],
+            likes: [],
+            date: `${moment().format('L')} - ${moment().format('LTS')}`
+        })
+        alert('Пост добавлен!');
+        setLoading(false)
+        history.push('/');
+    }, [content, history, imageURL, user?.uid, user?.username])
+
 
     useEffect(() => {
         if(files.length === 0) return;
         if(files.length === imageURL.length){
             addPost();
         }
-    }, [imageURL, addPost])
+    }, [imageURL, addPost, files.length])
 
     const handleSetFile = e => {
         const allFiles = [...e.target.files];
@@ -68,22 +85,22 @@ const NewPost = () => {
         }
     }
 
-    function addPost(){
-        fire.database()
-        .ref(`posts/`)
-        .push({
-            username: user.username,
-            uid: user.uid,
-            description: content,
-            images: imageURL,
-            comments: [],
-            likes: [],
-            date: `${moment().format('L')} - ${moment().format('LTS')}`
-        })
-        alert('Пост добавлен!');
-        setLoading(false)
-        history.push('/');
-    }
+    // function addPost(){
+    //     fire.database()
+    //     .ref(`posts/`)
+    //     .push({
+    //         username: user.username,
+    //         uid: user.uid,
+    //         description: content,
+    //         images: imageURL,
+    //         comments: [],
+    //         likes: [],
+    //         date: `${moment().format('L')} - ${moment().format('LTS')}`
+    //     })
+    //     alert('Пост добавлен!');
+    //     setLoading(false)
+    //     history.push('/');
+    // }
 
     return(
         <div className={cls.root}>

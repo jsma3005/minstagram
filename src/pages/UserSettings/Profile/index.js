@@ -1,19 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fire } from '../../../services/firebase';
 import cls from './UserProfile.module.scss';
 
 const UserProfile = () => {
-    const [user, setUser] = useState(null);
-    const currentUserUid = localStorage.getItem('minstagramAuth');
-
-    
-
-    useEffect(() => {
-        fire.database().ref(`/users/${currentUserUid}`).on('value', res => {
-            setUser(res.val());
-        })
-    }, [setUser, currentUserUid])
+    const { user } = useSelector(s => s.user);
 
     if(!user){
         return (

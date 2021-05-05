@@ -2,30 +2,35 @@ import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import cls from './Register.module.scss';
 import { fire } from '../../../services/firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllUsernamesAction } from '../../../store/actions/allUsernamesAction';
 
 const Register = () => {
     const [fullname, setFullname] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [users, setUsers] = useState(null);
     const history = useHistory();
+    const dispatch = useDispatch();
+    const { users } = useSelector(s => s.allUsernames);
 
-    // Fetch all users' usernames in DB
+    // получение всех логинов
     useEffect(() => {
         fire.database().ref('/users').on('value', res => {
             if(res.val()){
                 const response = Object.values(res.val()).map(item => item.username);
                 if(response.length !== 0){
-                    setUsers(response);
+                    dispatch(getAllUsernamesAction(response))
                 }else{
-                    setUsers(false);
+                    dispatch(getAllUsernamesAction(false))
                 }
             }else{
-                setUsers(false);
+                dispatch(getAllUsernamesAction(false))
             }
         })
-    }, [setUsers]);
+    }, [dispatch]);
+
+
 
     // Sign up handle
     const signUp = e => {

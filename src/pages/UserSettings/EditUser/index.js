@@ -3,6 +3,7 @@ import { fire } from '../../../services/firebase';
 import cls from './EditUser.module.scss';
 import { v4 as uuidv4 } from 'uuid';
 import { useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
 
 const EditUser = () => {
     const unknownImageUrl = 'https://st3.depositphotos.com/3581215/18899/v/600/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg';
@@ -13,19 +14,16 @@ const EditUser = () => {
 
     const [newFullname, setNewFullname] = useState('');
     const history = useHistory();
-
+    const { user } = useSelector(s => s.user);
 
     useEffect(() => {
-        fire.database().ref(`/users/${currentUserUid}`).on('value', res => {
-            if(res.val()){
-                const user = res.val();
-                setOldAvatar(user.avatar);
-                setNewFullname(user.fullname);
-            }else{
-                setOldAvatar(false);
-            }
-        })
-    }, [setOldAvatar, setNewFullname, currentUserUid])
+        if(user){
+            setOldAvatar(user.avatar);
+            setNewFullname(user.fullname);
+        }else{
+            setOldAvatar(false)
+        }
+    }, [user])
 
 
     const handleChangeProfile = e => {

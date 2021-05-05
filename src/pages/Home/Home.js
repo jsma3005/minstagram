@@ -14,7 +14,6 @@ const Home = () => {
             return;
         }else{
             fire.database().ref(`/posts`).on('value', res => {
-                console.log('Request to DB all posts');
                 const response = res.val() ? Object.entries(res.val()).map(item => {
                     return {
                         ...item[1],

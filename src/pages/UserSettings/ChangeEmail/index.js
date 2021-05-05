@@ -1,24 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { fire } from '../../../services/firebase';
 import cls from './ChangeEmail.module.scss';
 
 const ChangeEmail = () => {
     const [email, setEmail] = useState('');
-    const [oldEmail, setOldEmail] = useState('');
+    const { user } = useSelector(s => s.user);
     const currentUser = localStorage.getItem('minstagramAuth');
     const history = useHistory();
-    
-    useEffect(() => {
-        fire.database().ref(`/users/${currentUser}`)
-        .on('value', res => {
-            if(res.val()){
-                setOldEmail(res.val().email);
-            }else{
-                setOldEmail('')
-            }
-        })
-    }, [setOldEmail, currentUser]);
+    const oldEmail = user ? user.email : '';
 
     const handleChangeEmail = e => {
         e.preventDefault();
@@ -29,7 +20,7 @@ const ChangeEmail = () => {
                 .then(() => {
                     fire.database().ref(`/users/${currentUser}`).update({
                         email: email
-                    }) 
+                    })
                     .then(() => {
                         alert('Обновлено успешно!')
                         setEmail('');
