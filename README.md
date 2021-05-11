@@ -9,6 +9,7 @@
 * SCSS
 * Moment.js
 * Google Firebase ( Authentication, Realtime Database, Storage )
+* Swiper Carousel
 
 ## Особенности и описание проекта:
 * Регистрация и авторизация через Google Firebase Authentication и Realtime Database
