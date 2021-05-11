@@ -4,14 +4,11 @@
 ### https://jsma-minstagram.netlify.app/
 
 ## Какие технологии были использованы в данном проекте:
-### - React
-### - Redux
-### - React Router Dom
-### - SCSS
-### - Moment.js
-### - React Icons
-### - Swiper Carousel
-### - Google Firebase ( Authentication, Realtime Database, Storage )
+* - React / Redux
+* - React Router Dom
+* - SCSS
+* - Moment.js
+* - Google Firebase ( Authentication, Realtime Database, Storage )
 
 ## Особенности и описание проекта:
 * Регистрация и авторизация через Google Firebase Authentication и Realtime Database
