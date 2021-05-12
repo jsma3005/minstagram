@@ -9,6 +9,12 @@ import cls from './Login.module.scss';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailDirty, setEmailDirty] = useState(false);
+    const [passwordDirty, setPasswordDirty] = useState(false);
+    const [emailError, setEmailError] = useState('Email не может быть пустым!')
+    const [passwordError, setPasswordError] = useState('Пароль не может быть пустым!');
+    const [isButtonValid, setIsButtonValid] = useState(false);
+    
     const [loading, setLoading] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
@@ -28,6 +34,14 @@ const Login = () => {
             }
         })
     }, [dispatch]);
+
+    useEffect(() => {
+        if(emailError || passwordError){
+            setIsButtonValid(false)
+        }else{
+            setIsButtonValid(true)
+        }
+    }, [emailError, passwordError]);
 
     const googleAuthHandler = e => {
         e.preventDefault();
@@ -56,25 +70,79 @@ const Login = () => {
 
     const signIn = e => {
         e.preventDefault();
+        setLoading(true);
 
-        if(email !== '' && password !== ''){
-            setLoading(true);
-            fire.auth().signInWithEmailAndPassword(email, password)
-            .then(res => {
-                alert(`Добро пожаловать, ${res.user.displayName}!`);
-                setEmail('');
-                setPassword('');
-                localStorage.setItem('minstagramAuth', res.user.uid);
-            })
-            .then(() => {
-                history.push('/');
-            })
-            .catch(err => {
-                setLoading(false);
-                alert(err.message);
-            })
+        fire.auth().signInWithEmailAndPassword(email, password)
+        .then(res => {
+            alert(`Добро пожаловать, ${res.user.displayName}!`);
+            setEmail('');
+            setPassword('');
+            localStorage.setItem('minstagramAuth', res.user.uid);
+        })
+        .then(() => {
+            history.push('/');
+        })
+        .catch(err => {
+            setLoading(false);
+            switch(err.code){
+                case 'auth/wrong-password':
+                    alert('Неправильный пароль!');
+                    setPassword('');
+                    setIsButtonValid(false);
+                    break;
+                case 'auth/user-not-found':
+                    alert('Пользователь с таким email не найден! Пожалуйста зарегистрируйтесь!');
+                    setEmail('');
+                    setPassword('');
+                    setIsButtonValid(false);
+                    break;
+                default: 
+                    return;
+            }
+        })
+    }
+
+
+    // Validation
+    const blurHandler = e => {
+        const name = e.target.name;
+
+        switch(name){
+            case 'email':
+                setEmailDirty(true);
+                break;
+            case 'password':
+                setPasswordDirty(true)
+                break;
+            default: 
+                setEmailDirty(false);
+                setPasswordDirty(false);
+        }
+    }
+
+    // Email Handler 
+    const emailHandler = e => {
+        const value = e.target.value;
+        setEmail(value);
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!re.test(String(value).toLowerCase())){
+            setEmailError('Некорректный email');
         }else{
-            alert('Не все поля заполнены!')
+            setEmailError('');
+        }
+    }
+
+    // Password Handler
+    const passwordHandler = e => {
+        const value = e.target.value;
+        setPassword(value);
+        if(value.length < 4){
+            setPasswordError('Пароль не может быть меньше 4 символов');
+            if(!value){
+                setPasswordError('Пароль не может быть пустым!');
+            }
+        }else{
+            setPasswordError('');
         }
     }
 
@@ -86,13 +154,34 @@ const Login = () => {
                 </div>
                 <div className='card-body'>
                     <div className='mb-3'>
-                        <input type='email' value={email} onChange={e => setEmail(e.target.value)} placeholder='Email' className='form-control' />
+                        {
+                            (emailDirty && emailError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{emailError}</div>
+                        }
+                        <input 
+                            onBlur={blurHandler}
+                            name='email' 
+                            type='email' 
+                            value={email} 
+                            onChange={emailHandler} 
+                            placeholder='Email' 
+                            className='form-control' 
+                        />
                     </div>
                     <div className='mb-3'>
-                        <input type='password' value={password} onChange={e => setPassword(e.target.value)} placeholder='Password' className='form-control' />
+                        {
+                            (passwordDirty && passwordError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{passwordError}</div>
+                        }
+                        <input 
+                            onBlur={blurHandler}
+                            name='password' 
+                            type='password' 
+                            value={password} 
+                            onChange={passwordHandler} placeholder='Password' 
+                            className='form-control' 
+                        />
                     </div>
                     <div className='text-center'>
-                        <button disabled={loading ? true : false} onClick={signIn} className='btn btn-primary'>Авторизация</button>
+                        <button disabled={!isButtonValid || loading} onClick={signIn} className='btn btn-primary'>Авторизация</button>
                         <p className='mt-3'>Нет аккаунта? <Link to='/auth/register'>зарегистрироваться</Link></p>
                         <div className='mt-3'>
                             {
