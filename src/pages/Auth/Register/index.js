@@ -12,6 +12,18 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [fullnameDirty, setFullnameDirty] = useState(false);
+    const [usernameDirty, setUsernameDirty] = useState(false);
+    const [emailDirty, setEmailDirty] = useState(false);
+    const [passwordDirty, setPasswordDirty] = useState(false);
+
+    const [fullnameError, setFullnameError] = useState('ФИО не может быть пустым!')
+    const [usernameError, setUsernameError] = useState('Имя пользователя не может быть пустым!');
+    const [emailError, setEmailError] = useState('Email не может быть пустым!');
+    const [passwordError, setPasswordError] = useState('Пароль не может быть пустым!');
+    const [isButtonValid, setIsButtonValid] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
@@ -38,17 +50,27 @@ const Register = () => {
     }, [dispatch]);
 
 
+    useEffect(() => {
+        if(emailError || passwordError || usernameError || fullnameError){
+            setIsButtonValid(false)
+        }else{
+            setIsButtonValid(true)
+        }
+    }, [emailError, passwordError, usernameError, fullnameError]);
+
 
     // Sign up handle
     const signUp = e => {
         e.preventDefault();
 
-        if(email !== '' && password !== '' && fullname !== '' && username !== '' && users){
+        if(users){
             // проверка уникального логина
             const usernameCheck = users?.includes(username);
             
             if(usernameCheck){
-                alert('Указанный логин уже используется!')
+                alert('Указанный логин уже используется!');
+                setIsButtonValid(false);
+                setUsername('');
             }else{
                 setLoading(true);
                 fire.auth().createUserWithEmailAndPassword(email, password)
@@ -79,11 +101,8 @@ const Register = () => {
             }
         }else if(users === null || !users){
             alert('Что-то пошло не так!');
-        }else{
-            alert('Не все поля заполнены!');
         }
     }
-
 
     const googleAuthHandler = e => {
         e.preventDefault();
@@ -110,6 +129,84 @@ const Register = () => {
         })
     }
 
+    // Validation
+    const blurHandler = e => {
+        const name = e.target.name;
+
+        switch(name){
+            case 'email':
+                setEmailDirty(true);
+                break;
+            case 'password':
+                setPasswordDirty(true)
+                break;
+            case 'username':
+                setUsernameDirty(true);
+                break;
+            case 'fullname':
+                setFullnameDirty(true);
+                break;
+            default: 
+                setEmailDirty(false);
+                setPasswordDirty(false);
+                setFullnameDirty(false);
+                setUsernameDirty(false);
+        }
+    }
+
+    // username and fullname handlers
+    const usernameHandler = e => {
+        const value = e.target.value;
+        setUsername(value);
+        if(value.length < 3){
+            setUsernameError('Имя пользователя не может быть меньше 3 символов!');
+            if(!value){
+                setUsernameError('Имя пользователя не может быть пустым!');
+            }
+        }else{
+            setUsernameError('');
+        }
+    }
+
+    const fullnameHandler = e => {
+        const value = e.target.value;
+        setFullname(value);
+        if(value.length < 3){
+            setFullnameError('ФИО не может быть меньше 3 символов!');
+            if(!value){
+                setFullnameError('ФИО не может быть пустым!');
+            }
+        }else{
+            setFullnameError('');
+        }
+    }
+
+    // Email Handler 
+    const emailHandler = e => {
+        const value = e.target.value;
+        setEmail(value);
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!re.test(String(value).toLowerCase())){
+            setEmailError('Некорректный email');
+        }else{
+            setEmailError('');
+        }
+    }
+
+    // Password Handler
+    const passwordHandler = e => {
+        const value = e.target.value;
+        setPassword(value);
+        if(value.length < 4){
+            setPasswordError('Пароль не может быть меньше 4 символов');
+            if(!value){
+                setPasswordError('Пароль не может быть пустым!');
+            }
+        }else{
+            setPasswordError('');
+        }
+    }
+
     return (
         <form className={cls.root}>
             <div className='card'>
@@ -118,19 +215,61 @@ const Register = () => {
                 </div>
                 <div className='card-body'>
                     <div className='mb-3'>
-                        <input type='text' onChange={e => setFullname(e.target.value)} placeholder='ФИО' className='form-control' />
+                        {
+                            (fullnameDirty && fullnameError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{fullnameError}</div>
+                        }
+                        <input 
+                            name='fullname' 
+                            type='text' 
+                            onBlur={blurHandler}
+                            onChange={fullnameHandler} 
+                            placeholder='ФИО' 
+                            className='form-control' 
+                            value={fullname}
+                        />
                     </div>
                     <div className='mb-3'>
-                        <input type='text' onChange={e => setUsername(e.target.value)} placeholder='Имя пользователя' className='form-control' />
+                        {
+                            (usernameDirty && usernameError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{usernameError}</div>
+                        }
+                        <input 
+                            name='username' 
+                            type='text' 
+                            value={username}
+                            onBlur={blurHandler}
+                            onChange={usernameHandler} 
+                            placeholder='Имя пользователя' 
+                            className='form-control' 
+                        />
                     </div>
                     <div className='mb-3'>
-                        <input type='email' value={email} onChange={e => setEmail(e.target.value)} placeholder='Email' className='form-control' />
+                        {
+                            (emailDirty && emailError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{emailError}</div>
+                        }
+                        <input 
+                            name='email' 
+                            type='email' 
+                            value={email} 
+                            onBlur={blurHandler}
+                            onChange={emailHandler} 
+                            placeholder='Email' className='form-control' 
+                        />
                     </div>
                     <div className='mb-3'>
-                        <input type='password' value={password} onChange={e => setPassword(e.target.value)} placeholder='Password' className='form-control' />
+                        {
+                            (passwordDirty && passwordError) && <div style={{color: 'red', marginBottom: '.3rem'}}>{passwordError}</div>
+                        }
+                        <input 
+                            name='password' 
+                            type='password' 
+                            value={password} 
+                            onBlur={blurHandler}
+                            onChange={passwordHandler} placeholder='Password' 
+                            className='form-control' 
+                        />
                     </div>
                     <div className='text-center'>
-                        <button disabled={loading ? true : false} onClick={signUp} type='submit' className='btn btn-primary'>Регистрация</button>
+                        <button disabled={!isButtonValid || loading} onClick={signUp} type='submit' className='btn btn-primary'>Регистрация</button>
                         <p className='mt-3'>Есть аккаунт? <Link to='/auth/login'>авторизоваться</Link></p>
                         <div className='mt-3'>
                             {
